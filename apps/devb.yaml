@@ -1,14 +1,24 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: helm-guestbook-b-dev
   namespace: argocd
+  name: dev-b
+  # cascade deletes
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  project: ops-central
+  project: default
+
   source:
     repoURL: https://github.com/gsl-meriemelouafi/kustomize-with-helm.git
     targetRevision: HEAD
-    path: .
+    path: dev-b
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
